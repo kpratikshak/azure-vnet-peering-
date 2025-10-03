@@ -8,29 +8,49 @@ To create a secure VNet peering connection between two different VNets
 # Step-by-Step Setup Using Azure CLI:
 
 1️⃣ Create Resource Group
-az group create --name MyResourceGroup --location eastus
+# az group create --name MyResourceGroup --location eastus
 
 2️⃣ Create Two VNets:
-
-az network vnet create \
+# az network vnet create 
   --resource-group MyResourceGroup \
   --name VNetA \
   --address-prefix 10.0.0.0/16 \
   --subnet-name SubnetA \
   --subnet-prefix 10.0.1.0/24
-
-az network vnet create \
+  
+  az network vnet create \
   --resource-group MyResourceGroup \
   --name VNetB \
   --address-prefix 10.1.0.0/16 \
   --subnet-name SubnetB \
   --subnet-prefix 10.1.1.0/24
 
+
+ # az network vnet create 
+  --resource-group MyResourceGroup 
+  --name VNetB \
+  --address-prefix 10.1.0.0/16 \
+  --subnet-name SubnetB \
+  --subnet-prefix 10.1.1.0/24
+
 # 3️⃣ Create VNet Peerings
+az network vnet peering create \
+  --name VNetA-to-VNetB \
+  --resource-group MyResourceGroup \
+  --vnet-name VNetA \
+  --remote-vnet VNetB \
+  --allow-vnet-access
+
+az network vnet peering create \
+  --name VNetB-to-VNetA \
+  --resource-group MyResourceGroup \
+  --vnet-name VNetB \
+  --remote-vnet VNetA \
+  --allow-vnet-access
 
 
 # 4️⃣ Deploy Virtual Machines:
-az vm create \
+   az vm create \
   --resource-group MyResourceGroup \
   --name VM1 \
   --image UbuntuLTS \
@@ -39,7 +59,7 @@ az vm create \
   --vnet-name VNetA \
   --subnet SubnetA
 
-az vm create \
+az vm create 
   --resource-group MyResourceGroup \
   --name VM2 \
   --image UbuntuLTS \
@@ -48,11 +68,10 @@ az vm create \
   --vnet-name VNetB \
   --subnet SubnetB
 
-##
-🚀 Test Connectivity with given bash cmd 
+# Test Connectivity with given bash cmd 
 
 SSH into VM1:
-az vm ssh --name VM1 --resource-group MyResourceGroup
+# az vm ssh --name VM1 --resource-group MyResourceGroup
 
 
 Ping VM2’s private IP:
@@ -60,10 +79,10 @@ ping 10.1.1.4
 
 # SSH from VM1 to VM2 with security rules access:
 
-ssh azureuser@10.1.1.4
+# ssh azureuser@10.1.1.4
 
 # Cleanup
-# bash: -az group delete --name MyResourceGroup --yes --no-wait
+ bash: -az group delete --name MyResourceGroup --yes --no-wait
 
 
 ## Terraform setup with Network Security Groups (NSGs) and rules:
